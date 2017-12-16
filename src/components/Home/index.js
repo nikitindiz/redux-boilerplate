@@ -1,21 +1,40 @@
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { getNews } from '../../redux/modules/news/actions';
 
-import React from 'react';
-import styles from './styles.scss';
+class Home extends Component {
+  constructor(props) {
+    super(props);
+  }
 
-function Home() {
-  return (
-    <section>
-      <p className={styles.paragraph}>
-        Welcome to the <strong>Universal React Starter-kyt</strong>.
-        This starter kyt should serve as the base for an advanced,
-        server-rendered React app.
-      </p>
-      <p className={styles.paragraph}>
-        Check out the Tools section for an outline of the libraries that
-        are used in this Starter-kyt.
-      </p>
-    </section>
-  );
+  render() {
+    const {
+      news: {
+        response: {
+          data: {
+            articles = []
+          } = {}
+        } = {}
+      } = {}
+    } = this.props;
+
+    return (
+      <section>
+        {articles.map(({ title, description }, key) => (
+          <div key={`Article${key}`}>
+            {title} - {description}
+          </div>
+        ))}
+        <button onClick={this.props.getNews}>
+          Get news
+        </button>
+      </section>
+    )
+  }
 }
 
-export default Home;
+const mapStateToProps = (state) => ({
+  news: state.news
+})
+
+export default connect(mapStateToProps, { getNews })(Home)
